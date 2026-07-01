@@ -25,7 +25,7 @@ L'interfaccia è **in tedesco**. Tutto il copy, le label, i messaggi di errore: 
 
 | Tabella | Scopo |
 |---|---|
-| `profiles` | Utenti registrati. Campi: `id`, `nickname`, `first_name`, `last_name`, `is_admin`, `email` |
+| `profiles` | Utenti registrati. Campi: `id`, `nickname`, `first_name`, `last_name`, `is_admin`, `email`, `active_until` (nullable: vuoto/futuro = attivo, passato = inattivo) |
 | `tournaments` | Tornei. Campi: `id`, `name`, `rules`, `sets_to_win` (= legs target), `status` (open/closed/finished) |
 | `tournament_players` | N:M tra tornei e giocatori. `draw_position` per il sorteggio |
 | `matches` | Partite del tabellone. `round`, `position`, `player1_id`, `player2_id`, `winner_id`, `is_bye` |
@@ -41,6 +41,7 @@ L'interfaccia è **in tedesco**. Tutto il copy, le label, i messaggi di errore: 
 - **Turnierbaum** — non "Tabelle"
 - **Teilnehmende** — non "Teilnehmer"
 - **Dart-Name** — non "Spitzname"
+- **Linguaggio inclusivo** — `Spieler*in` (singolare) / `Spieler*innen` (plurale), non "Spieler"
 
 ## Pattern architetturali da rispettare
 
@@ -65,6 +66,7 @@ L'interfaccia è **in tedesco**. Tutto il copy, le label, i messaggi di errore: 
 - Tutte le tabelle hanno RLS attivo
 - Esistono policy specifiche per admin (`is_admin = true`) e per self-service (es. giocatori che si iscrivono a un torneo)
 - Le funzioni DB critiche usano `SECURITY DEFINER`
+- La policy self-service `profiles_update` permette a un utente di aggiornare qualsiasi colonna della propria riga: il trigger `protect_admin_only_profile_fields` (`before update on profiles`) blocca a livello DB le modifiche a `is_admin` e `active_until` da parte di chi non è admin, indipendentemente dal client usato
 
 ### Bracket (Turnierbaum)
 - Eliminazione diretta con gestione dei bye
@@ -99,7 +101,10 @@ src/
     ui/               # shadcn/ui components (Button, Badge, Input, ecc.)
   lib/supabase/       # client.ts (browser) e server.ts (SSR)
   middleware.ts       # Protezione route
-  types/database.ts   # Tipi TypeScript per il DB
+  types/database.ts   # Tipi TypeScript per il DB — GENERATO dallo schema live via Supabase MCP
+                       # (generate_typescript_types), non va scritto/editato a mano: una versione
+                       # a mano aveva causato query intere tipizzate `never` (join/select annidate
+                       # senza `Relationships`). Rigenerare dopo ogni migration.
 ```
 
 ## Stato attuale (luglio 2026)
@@ -112,12 +117,15 @@ src/
 - ✅ Profilo utente
 - ✅ Admin panel (gestione ruoli, link iscrizione, inviti)
 - ✅ Export PDF Turnierbaum (con workaround per oklch Tailwind v4)
+- ✅ Giocatore attivo/inattivo (`active_until` in `/admin`, badge + filtro Aktiv/Inaktiv/Alle in `/players`, trigger DB anti self-escalation)
+- ✅ Tabella `/players` ordinabile per colonna
+- ✅ Linguaggio inclusivo (`Spieler*in`/`Spieler*innen`) in tutta l'interfaccia
 
 ## Da fare
 
 - ⬜ **Deploy su Vercel** — commit su GitHub + deploy (prossimo passo immediato)
 - ⬜ **Code audit + security review** — verificare RLS policies, Server Actions, gestione errori, input validation; controllare che nessun dato sensibile sia esposto client-side
-- ⬜ **Code clean-up** — rimuovere codice morto, ottimizzare query Supabase, consolidare tipi TypeScript, migliorare gestione errori consistente
+- ⬜ **Code clean-up** — ottimizzare query Supabase, migliorare gestione errori consistente (dead code e tipi TypeScript già consolidati)
 - ⬜ **Charts statistiche giocatore** — aggiungere grafici sulla pagina `/players/[id]`: es. win rate nel tempo, legs vinti/persi per torneo (usare Recharts, già disponibile in shadcn/ui)
 - ⬜ **Head-to-head** — nuova funzione per confrontare due giocatori: storico scontri diretti, wins/losses reciproci, legs totali
-- ⬜ **Giocatore inattivo** — aggiungere stato `inaktiv` al dropdown ruoli in `/admin` (attualmente: Spieler / Admin). Un giocatore inattivo non dovrebbe apparire nelle liste di iscrizione ai tornei. Richiede: migration DB (aggiungere `is_active` a `profiles` o usare un enum `role`), aggiornamento RLS, aggiornamento UI
+- ⬜ **Enforcement giocatore inattivo** — un giocatore inattivo (vedi `active_until`) può ancora essere iscritto a nuovi tornei; valutare se filtrarlo dalla selezione in fase di creazione/iscrizione torneo
