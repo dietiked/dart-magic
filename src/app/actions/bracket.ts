@@ -81,10 +81,12 @@ export async function generateBracket(tournamentId: string) {
   for (const match of round1Matches) {
     if (match.is_bye && match.winner_id && totalRounds > 1) {
       const nextPos = Math.floor(match.position / 2)
-      const slot = match.position % 2 === 0 ? "player1_id" : "player2_id"
+      const update = match.position % 2 === 0
+        ? { player1_id: match.winner_id }
+        : { player2_id: match.winner_id }
       await supabase
         .from("matches")
-        .update({ [slot]: match.winner_id })
+        .update(update)
         .eq("tournament_id", tournamentId)
         .eq("round", 2)
         .eq("position", nextPos)
