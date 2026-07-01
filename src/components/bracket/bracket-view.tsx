@@ -28,13 +28,6 @@ interface BracketViewProps {
   isAdmin: boolean
 }
 
-const ROUND_LABELS: Record<number, string> = {
-  1: "Runde 1",
-  2: "Viertelfinale",
-  3: "Halbfinale",
-  4: "Finale",
-}
-
 function getRoundLabel(round: number, totalRounds: number): string {
   const fromEnd = totalRounds - round
   if (fromEnd === 0) return "Finale"

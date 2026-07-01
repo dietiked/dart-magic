@@ -9,7 +9,6 @@ import {
   removePlayerFromTournament,
 } from "@/app/actions/tournaments"
 import { generateBracket } from "@/app/actions/bracket"
-import { useRouter } from "next/navigation"
 
 type ActionType =
   | "register"
@@ -28,7 +27,6 @@ interface TournamentActionsProps {
 
 export function TournamentActions({ type, tournamentId, playerId }: TournamentActionsProps) {
   const [isPending, startTransition] = useTransition()
-  const router = useRouter()
 
   const handleAction = () => {
     startTransition(async () => {
