@@ -28,7 +28,7 @@ export default async function AdminPage() {
       <section className="mb-10">
         <h2 className="text-base font-semibold mb-1">Anmeldelink</h2>
         <p className="text-sm text-muted-foreground mb-4">
-          Teile diesen Link mit den Spielern. Nur wer den Link hat, kann sich anmelden.
+          Teile diesen Link mit den Spieler*innen. Nur wer den Link hat, kann sich anmelden.
         </p>
         <SignupLink activeToken={activeToken?.token ?? null} />
       </section>
@@ -37,7 +37,7 @@ export default async function AdminPage() {
       <section className="mb-10">
         <h2 className="text-base font-semibold mb-1">Spieler einladen</h2>
         <p className="text-sm text-muted-foreground mb-4">
-          Der eingeladene Spieler erhält einen Magic Link per E-Mail und kann sich damit einloggen.
+          Der/die eingeladene Spieler*in erhält einen Magic Link per E-Mail und kann sich damit einloggen.
         </p>
         <InviteForm />
       </section>

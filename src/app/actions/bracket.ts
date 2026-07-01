@@ -20,7 +20,7 @@ export async function generateBracket(tournamentId: string) {
     .select("player_id")
     .eq("tournament_id", tournamentId)
 
-  if (!players || players.length < 2) throw new Error("Mindestens 2 Spieler erforderlich")
+  if (!players || players.length < 2) throw new Error("Mindestens 2 Spieler*innen erforderlich")
 
   const playerIds = players.map(p => p.player_id)
   const N = playerIds.length
