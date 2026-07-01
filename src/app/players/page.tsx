@@ -45,7 +45,7 @@ export default async function PlayersPage() {
 
   return (
     <AppShell>
-      <h1 className="text-2xl font-semibold mb-6">Spieler</h1>
+      <h1 className="text-2xl font-semibold mb-6">Spieler*innen</h1>
 
       <PlayersTable players={players} />
     </AppShell>

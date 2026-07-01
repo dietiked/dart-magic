@@ -60,7 +60,7 @@ export default async function PlayerProfilePage({
     <AppShell>
       <Link href="/players" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
         <ChevronLeft className="h-4 w-4" />
-        Alle Spieler
+        Alle Spieler*innen
       </Link>
 
       <div className="mb-6">
@@ -93,7 +93,7 @@ export default async function PlayerProfilePage({
             <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
               <tr>
                 <th className="text-left px-4 py-2">Turnier</th>
-                <th className="text-left px-4 py-2">Gegner</th>
+                <th className="text-left px-4 py-2">Gegner*in</th>
                 <th className="text-center px-4 py-2">Ergebnis</th>
                 <th className="text-center px-4 py-2">Legs</th>
               </tr>

@@ -28,7 +28,7 @@ export function Navbar({ profile }: NavbarProps) {
               href="/players"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              Spieler
+              Spieler*innen
             </Link>
             {profile?.is_admin && (
               <Link

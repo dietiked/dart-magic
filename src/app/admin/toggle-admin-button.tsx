@@ -42,7 +42,7 @@ export function ToggleAdminButton({ playerId, isAdmin, isSelf }: RoleSelectProps
       disabled={isPending}
       className="text-sm border border-input rounded-md px-2 py-1 bg-white disabled:opacity-50 cursor-pointer"
     >
-      <option value="spieler">Spieler</option>
+      <option value="spieler">Spieler*in</option>
       <option value="admin">Admin</option>
     </select>
   )

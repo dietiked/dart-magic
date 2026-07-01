@@ -104,7 +104,7 @@ export function PlayersTable({ players }: { players: PlayerRow[] }) {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
             <tr>
-              <SortableHeader label="Spieler" align="left" column="nickname" activeColumn={sortColumn} direction={sortDirection} onSort={handleSort} />
+              <SortableHeader label="Spieler*in" align="left" column="nickname" activeColumn={sortColumn} direction={sortDirection} onSort={handleSort} />
               <SortableHeader label="Partien" align="center" column="played" activeColumn={sortColumn} direction={sortDirection} onSort={handleSort} />
               <SortableHeader label="Siege" align="center" column="wins" activeColumn={sortColumn} direction={sortDirection} onSort={handleSort} />
               <SortableHeader label="Niederlagen" align="center" column="losses" activeColumn={sortColumn} direction={sortDirection} onSort={handleSort} />

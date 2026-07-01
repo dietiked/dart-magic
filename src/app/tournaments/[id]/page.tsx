@@ -57,7 +57,7 @@ export default async function TournamentPage({
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground">
-            {players.length} Spieler{players.length !== 1 ? "" : "in"} angemeldet
+            {players.length} Spieler{players.length !== 1 ? "*innen" : "*in"} angemeldet
             {" · "}Gewinn-Legs: {tournament.sets_to_win}
           </p>
         </div>
@@ -81,7 +81,7 @@ export default async function TournamentPage({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Player list */}
         <div className="md:col-span-2">
-          <h2 className="font-medium mb-3">Angemeldete Spieler</h2>
+          <h2 className="font-medium mb-3">Teilnehmende</h2>
           {players.length === 0 ? (
             <p className="text-sm text-muted-foreground bg-white border rounded-lg p-4">
               Noch keine Anmeldungen.

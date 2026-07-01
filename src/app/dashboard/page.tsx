@@ -35,7 +35,7 @@ export default async function DashboardPage() {
   return (
     <AppShell>
       <h1 className="text-2xl font-semibold mb-1">
-        Willkommen, {profile?.nickname ?? "Spieler"}!
+        Willkommen, {profile?.nickname ?? "Spieler*in"}!
       </h1>
       <p className="text-muted-foreground mb-8">Hier sind die aktuellen Turniere.</p>
 
