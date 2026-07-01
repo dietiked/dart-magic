@@ -4,6 +4,7 @@ import { AppShell } from "@/components/layout/app-shell"
 import { InviteForm } from "./invite-form"
 import { ToggleAdminButton } from "./toggle-admin-button"
 import { SignupLink } from "./signup-link"
+import { ActiveUntilField } from "./active-until-field"
 
 export default async function AdminPage() {
   const supabase = await createClient()
@@ -15,7 +16,7 @@ export default async function AdminPage() {
   if (!profile?.is_admin) redirect("/dashboard")
 
   const [{ data: players }, { data: activeToken }] = await Promise.all([
-    supabase.from("profiles").select("id, nickname, first_name, last_name, is_admin").order("nickname"),
+    supabase.from("profiles").select("id, nickname, first_name, last_name, is_admin, active_until").order("nickname"),
     supabase.from("signup_tokens").select("token").eq("is_active", true).limit(1).maybeSingle(),
   ])
 
@@ -51,6 +52,7 @@ export default async function AdminPage() {
                 <th className="text-left px-4 py-3">Nickname</th>
                 <th className="text-left px-4 py-3">Name</th>
                 <th className="text-left px-4 py-3">Rolle</th>
+                <th className="text-left px-4 py-3">Aktiv bis</th>
               </tr>
             </thead>
             <tbody className="divide-y">
@@ -66,6 +68,9 @@ export default async function AdminPage() {
                       isAdmin={p.is_admin ?? false}
                       isSelf={p.id === user.id}
                     />
+                  </td>
+                  <td className="px-4 py-3">
+                    <ActiveUntilField playerId={p.id} activeUntil={p.active_until} />
                   </td>
                 </tr>
               ))}

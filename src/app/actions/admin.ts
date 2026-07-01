@@ -72,3 +72,26 @@ export async function toggleAdmin(playerId: string, makeAdmin: boolean) {
 
   revalidatePath("/admin")
 }
+
+export async function updateActiveUntil(playerId: string, activeUntil: string | null) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect("/login")
+
+  const { data: profile } = await supabase
+    .from("profiles").select("is_admin").eq("id", user.id).single()
+  if (!profile?.is_admin) throw new Error("Nicht berechtigt")
+
+  if (activeUntil !== null && !/^\d{4}-\d{2}-\d{2}$/.test(activeUntil)) {
+    throw new Error("Ungültiges Datumsformat")
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ active_until: activeUntil })
+    .eq("id", playerId)
+
+  if (error) throw new Error(error.message)
+
+  revalidatePath("/admin")
+}

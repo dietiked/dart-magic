@@ -7,6 +7,7 @@ export interface Profile {
   first_name: string | null
   last_name: string | null
   is_admin: boolean
+  active_until: string | null
   created_at: string
 }
 
