@@ -8,7 +8,7 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Dart-Turnier",
+  title: "Dart Magic",
   description: "Turnierverwaltung für Dart",
 };
 

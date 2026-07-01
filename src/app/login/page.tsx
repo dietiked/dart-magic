@@ -43,7 +43,7 @@ export default function LoginPage() {
           <div className="flex justify-center mb-2">
             <Target className="h-10 w-10 text-primary" />
           </div>
-          <CardTitle className="text-2xl">Dart-Turnier</CardTitle>
+          <CardTitle className="text-2xl">Dart Magic</CardTitle>
           <CardDescription>
             Melde dich mit deiner E-Mail-Adresse an
           </CardDescription>

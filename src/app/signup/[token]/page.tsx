@@ -27,7 +27,7 @@ export default async function SignupPage({
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Target className="h-7 w-7" />
-            <span className="text-xl font-semibold">Dart-Turnier</span>
+            <span className="text-xl font-semibold">Dart Magic</span>
           </div>
           <h1 className="text-2xl font-bold">Anmeldung</h1>
           <p className="text-muted-foreground mt-1 text-sm">

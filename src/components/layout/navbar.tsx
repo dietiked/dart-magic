@@ -15,7 +15,7 @@ export function Navbar({ profile }: NavbarProps) {
         <div className="flex items-center gap-8">
           <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
             <Target className="h-5 w-5" />
-            Dart-Turnier
+            Dart Magic
           </Link>
           <nav className="flex items-center gap-6 text-sm">
             <Link
