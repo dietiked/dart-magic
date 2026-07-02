@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+import { isPlayerActive } from "@/lib/player-status"
 
 export async function createTournament(formData: FormData) {
   const supabase = await createClient()
@@ -52,6 +53,12 @@ export async function registerForTournament(tournamentId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
+
+  const { data: profile } = await supabase
+    .from("profiles").select("active_until").eq("id", user.id).single()
+  if (!isPlayerActive(profile?.active_until ?? null)) {
+    throw new Error("Inaktive Spieler*innen können sich nicht für Turniere anmelden.")
+  }
 
   await supabase.from("tournament_players").insert({
     tournament_id: tournamentId,

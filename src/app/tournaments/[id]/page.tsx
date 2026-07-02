@@ -7,6 +7,7 @@ import { TournamentActions } from "./tournament-actions"
 import { ScrollText } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { isPlayerActive } from "@/lib/player-status"
 
 const statusLabel: Record<TournamentStatus, string> = {
   open: "Anmeldung offen",
@@ -44,6 +45,7 @@ export default async function TournamentPage({
   const players = tournament.tournament_players ?? []
   const isRegistered = players.some((tp: { player_id: string }) => tp.player_id === user.id)
   const isAdmin = profile?.is_admin ?? false
+  const isActive = isPlayerActive(profile?.active_until ?? null)
 
   return (
     <AppShell>
@@ -118,10 +120,16 @@ export default async function TournamentPage({
 
           {/* Player: register/unregister */}
           {tournament.status === "open" && (
-            <TournamentActions
-              type={isRegistered ? "unregister" : "register"}
-              tournamentId={id}
-            />
+            isRegistered || isActive ? (
+              <TournamentActions
+                type={isRegistered ? "unregister" : "register"}
+                tournamentId={id}
+              />
+            ) : (
+              <p className="text-sm text-muted-foreground bg-white border rounded-lg p-4">
+                Inaktive Spieler*innen können sich nicht für Turniere anmelden.
+              </p>
+            )
           )}
 
           {/* Admin panel */}

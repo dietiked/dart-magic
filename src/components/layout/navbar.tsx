@@ -1,7 +1,9 @@
 import Link from "next/link"
 import { Target } from "lucide-react"
 import { LogoutButton } from "./logout-button"
+import { Badge } from "@/components/ui/badge"
 import { Profile } from "@/types/database"
+import { isPlayerActive } from "@/lib/player-status"
 
 interface NavbarProps {
   profile: Profile | null
@@ -45,9 +47,12 @@ export function Navbar({ profile }: NavbarProps) {
         <div className="flex items-center gap-6">
           <Link
             href="/account"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             {profile?.nickname ?? "Konto"}
+            {profile && !isPlayerActive(profile.active_until) && (
+              <Badge variant="destructive">Inaktiv</Badge>
+            )}
           </Link>
           <LogoutButton />
         </div>
