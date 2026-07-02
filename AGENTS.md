@@ -78,6 +78,11 @@ L'interfaccia è **in tedesco**. Tutto il copy, le label, i messaggi di errore: 
 - Client-side con `jsPDF` + `html2canvas`
 - **Problema noto**: Tailwind v4 usa `oklch()`/`lab()` che html2canvas non sa parsare. Fix in `pdf-export-button.tsx`: patch temporanea di `window.getComputedStyle` che converte i colori non supportati in `rgb()` via canvas 1×1
 
+## Verifica delle modifiche
+
+- **Niente test visuali/browser** — non avviare preview server, non fare screenshot, non provare a loggarti nell'app (il login è magic-link via email, non simulabile). Usa solo verifiche statiche: `tsc --noEmit`, `eslint`, `next build` se utile.
+- Dopo le modifiche, elenca esplicitamente cosa l'utente deve testare manualmente e attendi la sua risposta prima di considerare il lavoro concluso.
+
 ## Struttura cartelle rilevante
 
 ```
@@ -120,6 +125,7 @@ src/
 - ✅ Giocatore attivo/inattivo (`active_until` in `/admin`, badge + filtro Aktiv/Inaktiv/Alle in `/players`, trigger DB anti self-escalation)
 - ✅ Tabella `/players` ordinabile per colonna
 - ✅ Linguaggio inclusivo (`Spieler*in`/`Spieler*innen`) in tutta l'interfaccia
+- ✅ Enforcement giocatore inattivo — un giocatore inattivo (`active_until`) è filtrato dalla selezione in fase di creazione/iscrizione torneo
 
 ## Da fare
 
@@ -128,4 +134,3 @@ src/
 - ⬜ **Code clean-up** — ottimizzare query Supabase, migliorare gestione errori consistente (dead code e tipi TypeScript già consolidati)
 - ⬜ **Charts statistiche giocatore** — aggiungere grafici sulla pagina `/players/[id]`: es. win rate nel tempo, legs vinti/persi per torneo (usare Recharts, già disponibile in shadcn/ui)
 - ⬜ **Head-to-head** — nuova funzione per confrontare due giocatori: storico scontri diretti, wins/losses reciproci, legs totali
-- ⬜ **Enforcement giocatore inattivo** — un giocatore inattivo (vedi `active_until`) può ancora essere iscritto a nuovi tornei; valutare se filtrarlo dalla selezione in fase di creazione/iscrizione torneo
