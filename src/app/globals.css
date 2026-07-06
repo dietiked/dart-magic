@@ -1,45 +1,45 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Core */
-  --color-background:          #ffffff;
-  --color-foreground:          #09090b;
+  /* Core — Wild Sand / Mirage */
+  --color-background:          #e4eef0;
+  --color-foreground:          #16232a;
 
   /* Card */
   --color-card:                #ffffff;
-  --color-card-foreground:     #09090b;
+  --color-card-foreground:     #16232a;
 
-  /* Primary (dark) */
-  --color-primary:             #18181b;
-  --color-primary-foreground:  #fafafa;
+  /* Primary — Blaze Orange */
+  --color-primary:             #ff5b04;
+  --color-primary-foreground:  #ffffff;
 
-  /* Secondary */
-  --color-secondary:           #f4f4f5;
-  --color-secondary-foreground:#18181b;
+  /* Secondary — Deep Sea Green */
+  --color-secondary:           #075056;
+  --color-secondary-foreground:#ffffff;
 
-  /* Muted */
-  --color-muted:               #f4f4f5;
-  --color-muted-foreground:    #71717a;
+  /* Muted (derived, lighter Wild Sand) */
+  --color-muted:               #dce7e9;
+  --color-muted-foreground:    #4b5b63;
 
-  /* Accent */
-  --color-accent:              #f4f4f5;
-  --color-accent-foreground:   #18181b;
+  /* Accent — Deep Sea Green */
+  --color-accent:              #075056;
+  --color-accent-foreground:   #ffffff;
 
   /* Destructive */
   --color-destructive:         #ef4444;
   --color-destructive-foreground: #fafafa;
 
-  /* Borders & inputs */
-  --color-border:              #e4e4e7;
-  --color-input:               #e4e4e7;
-  --color-ring:                #18181b;
+  /* Borders & inputs (derived, teal-gray) */
+  --color-border:              #c7d6d9;
+  --color-input:               #c7d6d9;
+  --color-ring:                #ff5b04;
 
   /* Font */
   --font-sans: var(--font-geist-sans);
 }
 
 body {
-  background: #ffffff;
-  color: #09090b;
+  background: #e4eef0;
+  color: #16232a;
   font-family: var(--font-geist-sans), Arial, sans-serif;
 }
