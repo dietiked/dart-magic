@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation"
 import { AppShell } from "@/components/layout/app-shell"
 import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
+import { PlayerCharts } from "./player-charts"
 
 export default async function PlayerProfilePage({
   params,
@@ -26,7 +27,7 @@ export default async function PlayerProfilePage({
   const { data: matches } = await supabase
     .from("matches")
     .select(`
-      id, round, winner_id, is_bye,
+      id, round, winner_id, is_bye, created_at,
       player1:profiles!matches_player1_id_fkey(id, nickname),
       player2:profiles!matches_player2_id_fkey(id, nickname),
       sets(set_number, score_p1, score_p2),
@@ -35,9 +36,9 @@ export default async function PlayerProfilePage({
     .or(`player1_id.eq.${id},player2_id.eq.${id}`)
     .eq("is_bye", false)
     .not("winner_id", "is", null)
-    .order("id", { ascending: false })
+    .order("created_at", { ascending: true })
 
-  const myMatches = (matches ?? []).map(m => {
+  const myMatchesChrono = (matches ?? []).map(m => {
     const p1 = Array.isArray(m.player1) ? m.player1[0] : m.player1
     const p2 = Array.isArray(m.player2) ? m.player2[0] : m.player2
     const tournament = Array.isArray(m.tournament) ? m.tournament[0] : m.tournament
@@ -50,9 +51,30 @@ export default async function PlayerProfilePage({
     return { id: m.id, tournament, opponent, won, myLegs, oppLegs }
   })
 
+  const myMatches = [...myMatchesChrono].reverse()
+
   const wins = myMatches.filter(m => m.won).length
   const losses = myMatches.filter(m => !m.won).length
   const winPct = myMatches.length > 0 ? Math.round((wins / myMatches.length) * 100) : null
+
+  // Dati per il grafico "Siegquote nel Verlauf": quota cumulativa dopo ogni partita
+  let cumWins = 0
+  const winRateSeries = myMatchesChrono.map((m, i) => {
+    if (m.won) cumWins++
+    return { match: i + 1, quote: Math.round((cumWins / (i + 1)) * 100) }
+  })
+
+  // Dati per il grafico "Legs pro Turnier": somma legs vinti/persi raggruppati per torneo
+  const legsByTournament = new Map<string, { name: string; legsWon: number; legsLost: number }>()
+  for (const m of myMatchesChrono) {
+    if (!m.tournament || m.myLegs === null || m.oppLegs === null) continue
+    const key = m.tournament.id
+    const entry = legsByTournament.get(key) ?? { name: m.tournament.name, legsWon: 0, legsLost: 0 }
+    entry.legsWon += m.myLegs
+    entry.legsLost += m.oppLegs
+    legsByTournament.set(key, entry)
+  }
+  const legsSeries = Array.from(legsByTournament.values())
 
   const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(" ")
 
@@ -82,6 +104,16 @@ export default async function PlayerProfilePage({
           </div>
         ))}
       </div>
+
+      {/* Statistik-Charts */}
+      {myMatches.length > 0 && (
+        <PlayerCharts
+          wins={wins}
+          losses={losses}
+          winRateSeries={winRateSeries}
+          legsSeries={legsSeries}
+        />
+      )}
 
       {/* Match history */}
       <h2 className="text-base font-semibold mb-3">Partien</h2>

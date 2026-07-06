@@ -126,11 +126,11 @@ src/
 - ✅ Tabella `/players` ordinabile per colonna
 - ✅ Linguaggio inclusivo (`Spieler*in`/`Spieler*innen`) in tutta l'interfaccia
 - ✅ Enforcement giocatore inattivo — un giocatore inattivo (`active_until`) è filtrato dalla selezione in fase di creazione/iscrizione torneo
+- ✅ Charts statistiche giocatore — pagina `/players/[id]` mostra "Siegquote im Verlauf" (line chart, quota cumulativa dopo ogni partita) e "Legs pro Turnier" (bar chart, legs vinti/persi raggruppati per torneo); componente client `player-charts.tsx` con shadcn `chart.tsx` + Recharts
 
 ## Da fare
 
 - ⬜ **Deploy su Vercel** — commit su GitHub + deploy (prossimo passo immediato)
 - ⬜ **Code audit + security review** — verificare RLS policies, Server Actions, gestione errori, input validation; controllare che nessun dato sensibile sia esposto client-side
 - ⬜ **Code clean-up** — ottimizzare query Supabase, migliorare gestione errori consistente (dead code e tipi TypeScript già consolidati)
-- ⬜ **Charts statistiche giocatore** — aggiungere grafici sulla pagina `/players/[id]`: es. win rate nel tempo, legs vinti/persi per torneo (usare Recharts, già disponibile in shadcn/ui)
 - ⬜ **Head-to-head** — nuova funzione per confrontare due giocatori: storico scontri diretti, wins/losses reciproci, legs totali
