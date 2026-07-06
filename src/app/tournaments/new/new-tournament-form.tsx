@@ -36,7 +36,7 @@ export function NewTournamentForm() {
           type="number"
           min={1}
           max={99}
-          defaultValue={3}
+          defaultValue={2}
           required
         />
         <p className="text-xs text-muted-foreground">
