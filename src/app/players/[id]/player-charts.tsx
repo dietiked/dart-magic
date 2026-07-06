@@ -1,6 +1,5 @@
 "use client"
 
-import { Label, Pie, PieChart } from "recharts"
 import {
   Bar,
   BarChart,
@@ -16,20 +15,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { WinLossDonut } from "@/components/players/win-loss-donut"
 
 type WinRatePoint = { match: number; quote: number }
 type LegsPoint = { name: string; legsWon: number; legsLost: number }
-
-const winLossConfig = {
-  won: {
-    label: "Siege",
-    color: "var(--color-green-600, #16a34a)",
-  },
-  lost: {
-    label: "Niederlagen",
-    color: "var(--color-red-600, #dc2626)",
-  },
-} satisfies ChartConfig
 
 const winRateConfig = {
   quote: {
@@ -60,56 +49,9 @@ export function PlayerCharts({
   winRateSeries: WinRatePoint[]
   legsSeries: LegsPoint[]
 }) {
-  const totalMatches = wins + losses
-  const winLossData = [
-    { name: "won", value: wins, fill: "var(--color-won)" },
-    { name: "lost", value: losses, fill: "var(--color-lost)" },
-  ]
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      <div className="bg-white border rounded-lg p-4">
-        <h2 className="text-sm font-semibold mb-3">Siege / Niederlagen</h2>
-        {totalMatches === 0 ? (
-          <p className="text-sm text-muted-foreground">Noch keine Partien gespielt.</p>
-        ) : (
-          <ChartContainer config={winLossConfig} className="mx-auto aspect-square h-56">
-            <PieChart>
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    hideLabel
-                    formatter={(value, name) => {
-                      const key = name as keyof typeof winLossConfig
-                      const label = winLossConfig[key]?.label ?? name
-                      const pct = totalMatches > 0 ? Math.round((Number(value) / totalMatches) * 100) : 0
-                      return [`${value} (${pct}%)`, ` ${label}`]
-                    }}
-                  />
-                }
-              />
-              <Pie data={winLossData} dataKey="value" nameKey="name" innerRadius={60} outerRadius={80} strokeWidth={5}>
-                <Label
-                  content={({ viewBox }) => {
-                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                      return (
-                        <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
-                          <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-3xl font-bold">
-                            {totalMatches}
-                          </tspan>
-                          <tspan x={viewBox.cx} y={(viewBox.cy ?? 0) + 24} className="fill-muted-foreground text-sm">
-                            Partien
-                          </tspan>
-                        </text>
-                      )
-                    }
-                  }}
-                />
-              </Pie>
-            </PieChart>
-          </ChartContainer>
-        )}
-      </div>
+      <WinLossDonut wins={wins} losses={losses} />
 
       <div className="bg-white border rounded-lg p-4">
         <h2 className="text-sm font-semibold mb-3">Siegquote im Verlauf</h2>
