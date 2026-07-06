@@ -24,23 +24,25 @@ export default async function AdminPage() {
     <AppShell>
       <h1 className="text-2xl font-semibold mb-8">Admin</h1>
 
-      {/* Signup link section */}
-      <section className="mb-10">
-        <h2 className="text-base font-semibold mb-1">Anmeldelink</h2>
-        <p className="text-sm text-muted-foreground mb-4">
-          Teile diesen Link mit den Spieler*innen. Nur wer den Link hat, kann sich anmelden.
-        </p>
-        <SignupLink activeToken={activeToken?.token ?? null} />
-      </section>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        {/* Signup link section */}
+        <section className="bg-white border rounded-lg p-6">
+          <h2 className="text-base font-semibold mb-1">Anmeldelink</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Teile diesen Link mit den Spieler*innen. Nur wer den Link hat, kann sich anmelden.
+          </p>
+          <SignupLink activeToken={activeToken?.token ?? null} />
+        </section>
 
-      {/* Invite section */}
-      <section className="mb-10">
-        <h2 className="text-base font-semibold mb-1">Spieler einladen</h2>
-        <p className="text-sm text-muted-foreground mb-4">
-          Der/die eingeladene Spieler*in erhält einen Magic Link per E-Mail und kann sich damit einloggen.
-        </p>
-        <InviteForm />
-      </section>
+        {/* Invite section */}
+        <section className="bg-white border rounded-lg p-6">
+          <h2 className="text-base font-semibold mb-1">Spieler einladen</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Der/die eingeladene Spieler*in erhält einen Magic Link per E-Mail und kann sich damit einloggen.
+          </p>
+          <InviteForm />
+        </section>
+      </div>
 
       {/* Player list */}
       <section>
