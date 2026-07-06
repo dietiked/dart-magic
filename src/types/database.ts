@@ -429,4 +429,5 @@ export const Constants = {
 
 // Convenience aliases used across the app
 export type Profile = Tables<"profiles">
+export type Tournament = Tables<"tournaments">
 export type TournamentStatus = Enums<"tournament_status">

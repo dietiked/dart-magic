@@ -8,18 +8,7 @@ import { ScrollText } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { isPlayerActive } from "@/lib/player-status"
-
-const statusLabel: Record<TournamentStatus, string> = {
-  open: "Anmeldung offen",
-  closed: "Anmeldung geschlossen",
-  finished: "Beendet",
-}
-
-const statusVariant: Record<TournamentStatus, "success" | "warning" | "secondary"> = {
-  open: "success",
-  closed: "warning",
-  finished: "secondary",
-}
+import { statusLabel, statusVariant } from "@/lib/tournament-status"
 
 export default async function TournamentPage({
   params,
