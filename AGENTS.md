@@ -18,7 +18,7 @@ L'interfaccia è **in tedesco**. Tutto il copy, le label, i messaggi di errore: 
 - **Tailwind CSS v4** con `@theme inline` — usa hex diretti, non classi custom
 - **shadcn/ui** — installato via CLI (`npx shadcn@latest add`), NON manualmente
 - **Supabase** — PostgreSQL, RLS, magic link OTP auth (`signInWithOtp`)
-- **Vercel** — deploy target (non ancora deployato, da fare)
+- **Vercel** — deploy target. Progetto `dietiked/dart-magic`, produzione su `dart-magic.vercel.app`. GitHub collegato: push su `main` = deploy automatico in produzione, push su altri branch/PR = deploy di anteprima. Env var richieste sul progetto Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_APP_URL` (usata da `admin.ts`/`signup.ts` per costruire il magic link — deve combaciare con una delle Redirect URLs configurate in Supabase Auth)
 - **Resend** — email transazionali, sender `dart@dartmagic.ch`, dominio `dartmagic.ch` (Infomaniak)
 
 ## Struttura DB (Supabase)
@@ -127,10 +127,11 @@ src/
 - ✅ Linguaggio inclusivo (`Spieler*in`/`Spieler*innen`) in tutta l'interfaccia
 - ✅ Enforcement giocatore inattivo — un giocatore inattivo (`active_until`) è filtrato dalla selezione in fase di creazione/iscrizione torneo
 - ✅ Charts statistiche giocatore — pagina `/players/[id]` mostra "Siegquote im Verlauf" (line chart, quota cumulativa dopo ogni partita) e "Legs pro Turnier" (bar chart, legs vinti/persi raggruppati per torneo); componente client `player-charts.tsx` con shadcn `chart.tsx` + Recharts
+- ✅ Deploy su Vercel — collegato a GitHub, deploy automatico su push a `main`
+- ✅ Footer con versione — `version` in `package.json` (bump manuale per release significative) + commit SHA breve, iniettato a build-time via `env` in `next.config.ts` (`process.env.VERCEL_GIT_COMMIT_SHA`, fallback `"dev"` in locale). Componente `src/components/layout/footer.tsx`, montato in `AppShell`
 
 ## Da fare
 
-- ⬜ **Deploy su Vercel** — commit su GitHub + deploy (prossimo passo immediato)
 - ⬜ **Code audit + security review** — verificare RLS policies, Server Actions, gestione errori, input validation; controllare che nessun dato sensibile sia esposto client-side
 - ⬜ **Code clean-up** — ottimizzare query Supabase, migliorare gestione errori consistente (dead code e tipi TypeScript già consolidati)
 - ⬜ **Head-to-head** — nuova funzione per confrontare due giocatori: storico scontri diretti, wins/losses reciproci, legs totali
