@@ -26,6 +26,7 @@ interface BracketViewProps {
   tournamentId: string
   currentUserId: string
   isAdmin: boolean
+  isTournamentFinished?: boolean
 }
 
 function getRoundLabel(round: number, totalRounds: number): string {
@@ -42,6 +43,7 @@ export function BracketView({
   tournamentId,
   currentUserId,
   isAdmin,
+  isTournamentFinished = false,
 }: BracketViewProps) {
   const totalRounds = Math.max(...matches.map(m => m.round))
 
@@ -91,6 +93,7 @@ export function BracketView({
                       currentUserId={currentUserId}
                       isAdmin={isAdmin}
                       isFinal={isFinalRound}
+                      isTournamentFinished={isTournamentFinished}
                     />
                   </div>
                 ))}

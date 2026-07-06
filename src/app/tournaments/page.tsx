@@ -12,7 +12,10 @@ export default async function TournamentsPage() {
   if (!user) redirect("/login")
 
   const [{ data: tournaments }, { data: profile }] = await Promise.all([
-    supabase.from("tournaments").select("*").order("created_at", { ascending: false }),
+    supabase
+      .from("tournaments")
+      .select("*, matches(count)")
+      .order("created_at", { ascending: false }),
     supabase.from("profiles").select("is_admin").eq("id", user.id).single(),
   ])
 
@@ -38,7 +41,8 @@ export default async function TournamentsPage() {
             const href = t.status === "open"
               ? `/tournaments/${t.id}`
               : `/tournaments/${t.id}/bracket`
-            return <TournamentListItem key={t.id} tournament={t} href={href} />
+            const hasBracket = (t.matches?.[0]?.count ?? 0) > 0
+            return <TournamentListItem key={t.id} tournament={t} href={href} hasBracket={hasBracket} />
           })}
         </div>
       )}

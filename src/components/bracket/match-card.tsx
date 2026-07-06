@@ -20,6 +20,7 @@ interface MatchCardProps {
   currentUserId: string
   isAdmin: boolean
   isFinal?: boolean
+  isTournamentFinished?: boolean
 }
 
 export function MatchCard({
@@ -29,6 +30,7 @@ export function MatchCard({
   currentUserId,
   isAdmin,
   isFinal = false,
+  isTournamentFinished = false,
 }: MatchCardProps) {
   const legResult = match.sets[0] ?? null
   const [showForm, setShowForm] = useState(false)
@@ -38,6 +40,7 @@ export function MatchCard({
   const [error, setError] = useState<string | null>(null)
 
   const canEnterResult =
+    !isTournamentFinished &&
     match.player1 &&
     match.player2 &&
     !match.is_bye &&

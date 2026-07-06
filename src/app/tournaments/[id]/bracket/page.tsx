@@ -62,7 +62,11 @@ export default async function BracketPage({
             <Badge variant="warning">Turnierbaum</Badge>
           </div>
           <p className="text-sm text-muted-foreground">
-            Gewinn-Legs: {tournament.sets_to_win} · Klicke auf eine Partie um das Ergebnis einzutragen
+            Gewinn-Legs: {tournament.sets_to_win}
+            {" · "}
+            {tournament.status === "finished"
+              ? "Turnier beendet – Ergebnisse können nicht mehr geändert werden."
+              : "Klicke auf eine Partie um das Ergebnis einzutragen"}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -79,6 +83,7 @@ export default async function BracketPage({
         tournamentId={id}
         currentUserId={user.id}
         isAdmin={profile?.is_admin ?? false}
+        isTournamentFinished={tournament.status === "finished"}
       />
     </AppShell>
   )

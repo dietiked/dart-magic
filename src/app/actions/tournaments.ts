@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { isPlayerActive } from "@/lib/player-status"
+import { tournamentHasBracket } from "@/lib/bracket"
 
 export async function createTournament(formData: FormData) {
   const supabase = await createClient()
@@ -43,6 +44,10 @@ export async function updateTournamentStatus(
     .from("profiles").select("is_admin").eq("id", user.id).single()
   if (!profile?.is_admin) throw new Error("Nicht berechtigt")
 
+  if (status === "open" && await tournamentHasBracket(supabase, id)) {
+    throw new Error("Anmeldung kann nicht wieder geöffnet werden, da der Turnierbaum bereits erstellt wurde.")
+  }
+
   await supabase.from("tournaments").update({ status }).eq("id", id)
 
   revalidatePath(`/tournaments/${id}`)
@@ -73,6 +78,10 @@ export async function unregisterFromTournament(tournamentId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
+  if (await tournamentHasBracket(supabase, tournamentId)) {
+    throw new Error("Abmelden ist nicht mehr möglich, da der Turnierbaum bereits erstellt wurde.")
+  }
+
   await supabase
     .from("tournament_players")
     .delete()
@@ -90,6 +99,10 @@ export async function removePlayerFromTournament(tournamentId: string, playerId:
   const { data: profile } = await supabase
     .from("profiles").select("is_admin").eq("id", user.id).single()
   if (!profile?.is_admin) throw new Error("Nicht berechtigt")
+
+  if (await tournamentHasBracket(supabase, tournamentId)) {
+    throw new Error("Spieler*in kann nicht mehr entfernt werden, da der Turnierbaum bereits erstellt wurde.")
+  }
 
   await supabase
     .from("tournament_players")

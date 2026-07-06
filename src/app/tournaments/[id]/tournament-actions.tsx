@@ -1,7 +1,18 @@
 "use client"
 
-import { useTransition } from "react"
+import { useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import {
   registerForTournament,
   unregisterFromTournament,
@@ -23,37 +34,50 @@ interface TournamentActionsProps {
   type: ActionType
   tournamentId: string
   playerId?: string
+  disabled?: boolean
+  /** Nur für type="finish-tournament": ob alle Partien bereits gespielt wurden */
+  isComplete?: boolean
 }
 
-export function TournamentActions({ type, tournamentId, playerId }: TournamentActionsProps) {
+export function TournamentActions({
+  type,
+  tournamentId,
+  playerId,
+  disabled = false,
+  isComplete = false,
+}: TournamentActionsProps) {
   const [isPending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
 
   const handleAction = () => {
+    setError(null)
     startTransition(async () => {
-      switch (type) {
-        case "register":
-          await registerForTournament(tournamentId)
-          break
-        case "unregister":
-          await unregisterFromTournament(tournamentId)
-          break
-        case "close-registrations":
-          await updateTournamentStatus(tournamentId, "closed")
-          break
-        case "reopen-registrations":
-          await updateTournamentStatus(tournamentId, "open")
-          break
-        case "finish-tournament":
-          if (confirm("Turnier wirklich als beendet markieren?")) {
+      try {
+        switch (type) {
+          case "register":
+            await registerForTournament(tournamentId)
+            break
+          case "unregister":
+            await unregisterFromTournament(tournamentId)
+            break
+          case "close-registrations":
+            await updateTournamentStatus(tournamentId, "closed")
+            break
+          case "reopen-registrations":
+            await updateTournamentStatus(tournamentId, "open")
+            break
+          case "finish-tournament":
             await updateTournamentStatus(tournamentId, "finished")
-          }
-          break
-        case "generate-bracket":
-          await generateBracket(tournamentId)
-          break
-        case "remove-player":
-          if (playerId) await removePlayerFromTournament(tournamentId, playerId)
-          break
+            break
+          case "generate-bracket":
+            await generateBracket(tournamentId)
+            break
+          case "remove-player":
+            if (playerId) await removePlayerFromTournament(tournamentId, playerId)
+            break
+        }
+      } catch (e) {
+        setError((e as Error).message)
       }
     })
   }
@@ -70,13 +94,46 @@ export function TournamentActions({ type, tournamentId, playerId }: TournamentAc
 
   const { label, variant, pendingLabel } = config[type]
 
+  if (type === "finish-tournament") {
+    return (
+      <div className="space-y-2">
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant={variant} className="w-full" disabled={isPending || disabled}>
+              {isPending ? pendingLabel : label}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {isComplete ? "Turnier beenden?" : "Turnier ist noch nicht abgeschlossen"}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {isComplete
+                  ? "Bist du sicher, dass du dieses Turnier als beendet markieren möchtest?"
+                  : "Es wurden noch nicht alle Partien gespielt. Möchtest du das Turnier trotzdem beenden?"}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+              <AlertDialogAction variant="destructive" onClick={handleAction}>
+                {isComplete ? "Ja, Turnier beenden" : "Trotzdem Turnier beenden"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        {error && <p className="text-xs text-red-600">{error}</p>}
+      </div>
+    )
+  }
+
   return (
     <Button
       variant={variant}
       size={type === "remove-player" ? "sm" : "default"}
       className={type !== "remove-player" ? "w-full" : ""}
       onClick={handleAction}
-      disabled={isPending}
+      disabled={isPending || disabled}
     >
       {isPending ? pendingLabel : label}
     </Button>

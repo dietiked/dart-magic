@@ -15,7 +15,7 @@ export default async function DashboardPage() {
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase
       .from("tournaments")
-      .select("*, tournament_players(count)")
+      .select("*, tournament_players(count), matches(count)")
       .in("status", ["open", "closed"])
       .order("created_at", { ascending: false }),
     supabase
@@ -48,7 +48,12 @@ export default async function DashboardPage() {
           ) : (
             <div className="space-y-3">
               {activeTournaments.map((t) => (
-                <TournamentListItem key={t.id} tournament={t} href={`/tournaments/${t.id}`} />
+                <TournamentListItem
+                  key={t.id}
+                  tournament={t}
+                  href={`/tournaments/${t.id}`}
+                  hasBracket={(t.matches?.[0]?.count ?? 0) > 0}
+                />
               ))}
             </div>
           )}

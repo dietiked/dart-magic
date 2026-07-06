@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
+import { tournamentHasBracket } from "@/lib/bracket"
 
 export async function generateBracket(tournamentId: string) {
   const supabase = await createClient()
@@ -13,6 +14,11 @@ export async function generateBracket(tournamentId: string) {
   const { data: profile } = await supabase
     .from("profiles").select("is_admin").eq("id", user.id).single()
   if (!profile?.is_admin) throw new Error("Nicht berechtigt")
+
+  // Turnierbaum darf nicht überschrieben werden, sobald er existiert (würde bestehende Ergebnisse löschen)
+  if (await tournamentHasBracket(supabase, tournamentId)) {
+    throw new Error("Turnierbaum wurde bereits erstellt.")
+  }
 
   // Carica i giocatori iscritti
   const { data: players } = await supabase
@@ -114,6 +120,15 @@ export async function submitMatchResult(
   tournamentId: string
 ) {
   const supabase = await createClient()
+
+  const { data: tournament } = await supabase
+    .from("tournaments")
+    .select("status")
+    .eq("id", tournamentId)
+    .single()
+  if (tournament?.status === "finished") {
+    throw new Error("Turnier ist beendet, Ergebnisse können nicht mehr geändert werden.")
+  }
 
   const { error } = await supabase.rpc("submit_match_result", {
     p_match_id: matchId,

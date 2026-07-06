@@ -2,13 +2,13 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect, notFound } from "next/navigation"
 import { AppShell } from "@/components/layout/app-shell"
 import { Badge } from "@/components/ui/badge"
-import { TournamentStatus } from "@/types/database"
 import { TournamentActions } from "./tournament-actions"
 import { ScrollText } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { isPlayerActive } from "@/lib/player-status"
-import { statusLabel, statusVariant } from "@/lib/tournament-status"
+import { getDisplayStatus, displayStatusLabel, displayStatusVariant } from "@/lib/tournament-status"
+import { tournamentHasBracket, isTournamentComplete } from "@/lib/bracket"
 
 export default async function TournamentPage({
   params,
@@ -20,13 +20,15 @@ export default async function TournamentPage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  const [{ data: tournament }, { data: profile }] = await Promise.all([
+  const [{ data: tournament }, { data: profile }, hasBracket, isComplete] = await Promise.all([
     supabase
       .from("tournaments")
       .select(`*, tournament_players(*, player:profiles(*))`)
       .eq("id", id)
       .single(),
     supabase.from("profiles").select("*").eq("id", user.id).single(),
+    tournamentHasBracket(supabase, id),
+    isTournamentComplete(supabase, id),
   ])
 
   if (!tournament) notFound()
@@ -35,6 +37,7 @@ export default async function TournamentPage({
   const isRegistered = players.some((tp: { player_id: string }) => tp.player_id === user.id)
   const isAdmin = profile?.is_admin ?? false
   const isActive = isPlayerActive(profile?.active_until ?? null)
+  const displayStatus = getDisplayStatus(tournament.status, hasBracket)
 
   return (
     <AppShell>
@@ -43,8 +46,8 @@ export default async function TournamentPage({
         <div className="space-y-2">
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-semibold">{tournament.name}</h1>
-            <Badge variant={statusVariant[tournament.status as TournamentStatus]}>
-              {statusLabel[tournament.status as TournamentStatus]}
+            <Badge variant={displayStatusVariant[displayStatus]}>
+              {displayStatusLabel[displayStatus]}
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground">
@@ -132,12 +135,17 @@ export default async function TournamentPage({
               )}
               {tournament.status === "closed" && (
                 <>
-                  <TournamentActions type="generate-bracket" tournamentId={id} />
-                  <TournamentActions type="reopen-registrations" tournamentId={id} />
+                  <TournamentActions type="generate-bracket" tournamentId={id} disabled={hasBracket} />
+                  <TournamentActions type="reopen-registrations" tournamentId={id} disabled={hasBracket} />
+                  {hasBracket && (
+                    <p className="text-xs text-muted-foreground">
+                      Turnierbaum wurde bereits erstellt. Anmeldung kann nicht mehr geändert werden.
+                    </p>
+                  )}
                 </>
               )}
               {tournament.status !== "finished" && (
-                <TournamentActions type="finish-tournament" tournamentId={id} />
+                <TournamentActions type="finish-tournament" tournamentId={id} isComplete={isComplete} />
               )}
             </div>
           )}
