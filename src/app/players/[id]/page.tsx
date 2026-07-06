@@ -134,7 +134,7 @@ export default async function PlayerProfilePage({
               {myMatches.map(m => (
                 <tr key={m.id} className={m.won ? "bg-green-50" : ""}>
                   <td className="px-4 py-2">
-                    <Link href={`/tournaments/${m.tournament?.id}/bracket`} className="hover:underline text-blue-600">
+                    <Link href={`/tournaments/${m.tournament?.id}/bracket`} className="hover:underline text-accent">
                       {m.tournament?.name ?? "—"}
                     </Link>
                   </td>

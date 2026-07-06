@@ -43,7 +43,7 @@ function SortableHeader({
       <button
         type="button"
         onClick={() => onSort(column)}
-        className={`inline-flex items-center gap-1 hover:text-foreground ${isActive ? "text-blue-600" : ""}`}
+        className={`inline-flex items-center gap-1 hover:text-foreground ${isActive ? "text-accent" : ""}`}
       >
         {label}
         {isActive ? (
@@ -115,7 +115,7 @@ export function PlayersTable({ players }: { players: PlayerRow[] }) {
             {sortedPlayers.map(p => (
               <tr key={p.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-4 py-3">
-                  <Link href={`/players/${p.id}`} className="font-medium hover:underline text-blue-600">
+                  <Link href={`/players/${p.id}`} className="font-medium hover:underline text-accent">
                     {p.nickname}
                   </Link>
                   {(p.first_name || p.last_name) && (

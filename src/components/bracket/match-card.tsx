@@ -99,7 +99,7 @@ export function MatchCard({
         <div className="px-3 py-2 border-t bg-gray-50">
           <button
             onClick={() => setShowForm(true)}
-            className="text-xs text-blue-600 hover:text-blue-800"
+            className="text-xs text-accent hover:text-accent/70"
           >
             {match.winner_id ? "Ergebnis korrigieren" : "Ergebnis eingeben"}
           </button>
