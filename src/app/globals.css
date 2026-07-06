@@ -13,9 +13,9 @@
   --color-primary:             #ff5b04;
   --color-primary-foreground:  #ffffff;
 
-  /* Secondary — Deep Sea Green */
-  --color-secondary:           #075056;
-  --color-secondary-foreground:#ffffff;
+  /* Secondary — neutral (used for "Beendet"-style muted states, kept distinct from Deep Sea Green) */
+  --color-secondary:           #d7e0e2;
+  --color-secondary-foreground:#16232a;
 
   /* Muted (derived, lighter Wild Sand) */
   --color-muted:               #dce7e9;

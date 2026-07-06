@@ -11,11 +11,11 @@ import {
 const winLossConfig = {
   won: {
     label: "Siege",
-    color: "var(--color-green-600, #16a34a)",
+    color: "#075056",
   },
   lost: {
     label: "Niederlagen",
-    color: "var(--color-red-600, #dc2626)",
+    color: "#ff5b04",
   },
 } satisfies ChartConfig
 

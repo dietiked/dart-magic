@@ -23,18 +23,18 @@ type LegsPoint = { name: string; legsWon: number; legsLost: number }
 const winRateConfig = {
   quote: {
     label: "Siegquote",
-    color: "var(--color-blue-600, #2563eb)",
+    color: "#075056",
   },
 } satisfies ChartConfig
 
 const legsConfig = {
   legsWon: {
     label: "Legs gewonnen",
-    color: "var(--color-green-600, #16a34a)",
+    color: "#075056",
   },
   legsLost: {
     label: "Legs verloren",
-    color: "var(--color-red-600, #dc2626)",
+    color: "#ff5b04",
   },
 } satisfies ChartConfig
 
